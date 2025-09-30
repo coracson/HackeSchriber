@@ -366,32 +366,37 @@ class _GamePageState extends State<GamePage> {
     final columns = [...widget.memberNames, 'Pot'];
     final numRows = memberValues[widget.memberNames[0]]!.length;
 
-    return WillPopScope(
-      onWillPop: () async {
-        // Show confirmation dialog
-        final shouldQuit = await showDialog<bool>(
-          context: context,
-          barrierDismissible: false,
-          builder: (context) => AlertDialog(
-            title: const Text('Quit Game'),
-            content: const Text(
-              'Are you sure you want to quit and delete the game?',
+    return PopScope(
+      canPop: false, // prevent auto-pop, we handle it
+      onPopInvokedWithResult: (didPop, result) async {
+        if (!didPop) {
+          // Show confirmation dialog
+          final shouldQuit = await showDialog<bool>(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => AlertDialog(
+              title: const Text('Quit Game'),
+              content: const Text(
+                'Are you sure you want to quit and delete the game?',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text('Back'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: const Text('Confirm'),
+                ),
+              ],
             ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('Back'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                child: const Text('Confirm'),
-              ),
-            ],
-          ),
-        );
+          );
 
-        // If user pressed confirm, return true to allow pop
-        return shouldQuit ?? false;
+          // If user pressed confirm, pop manually
+          if (shouldQuit == true && mounted) {
+            Navigator.of(context).pop();
+          }
+        }
       },
       child: Scaffold(
         backgroundColor: Colors.white,
