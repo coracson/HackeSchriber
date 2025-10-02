@@ -1,0 +1,49 @@
+{
+  "@@locale": "en",
+  "appTitle": "Hacke Schriber",
+  "addMemberPageTitle": "Add Member",
+  "memberNameLabel": "Member name",
+  "addAnotherMemberButton": "Add another member",
+  "startGameButton": "Start game",
+  "pleaseAddMemberError": "Please add at least one member.",
+  "duplicateMemberError": "Duplicate member names are not allowed.",
+  "dealerMistakeTitle": "Dealer mistake",
+  "dealerMistakeQuestion": "Who made the mistake?",
+  "cancelButton": "Cancel",
+  "confirmButton": "Confirm",
+  "backButton": "Back",
+  "continueButton": "Continue",
+  "payInTitle": "Pay in",
+  "payInQuestion": "Everyone has to pay in?",
+  "addRoundButton": "Add round",
+  "quitGameTitle": "Quit Game",
+  "quitGameQuestion": "Are you sure you want to quit and delete the game?",
+  "gameTableTitle": "Game Table",
+  "headerPot": "Pot",
+  "whoHackedQuestion": "Who hacked?",
+  "whoJoinedQuestion": "Who joined?",
+  "whoFellQuestion": "Who fell?",
+  "summaryTitle": "Summary",
+  "somethingIsWrong": "Something is wrong",
+  "hackedLabel": "Hacked: {name}",
+  "@hackedLabel": {
+    "description": "Label for showing who hacked",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "joinedLabel": "Joined: {names}",
+  "@joinedLabel": {
+    "description": "Label showing the list of players who joined",
+    "placeholders": {
+      "names": {}
+    }
+  },
+  "fellLabel": "Fell: {names}",
+  "@fellLabel": {
+    "description": "Label showing the list of players who fell",
+    "placeholders": {
+      "names": {}
+    }
+  }
+}

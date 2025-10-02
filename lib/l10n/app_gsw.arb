@@ -1,0 +1,49 @@
+{
+  "@@locale": "gsw",
+  "appTitle": "Hacke Schriber",
+  "addMemberPageTitle": "Spieler",
+  "memberNameLabel": "Spieler name",
+  "addAnotherMemberButton": "Nüa Spieler",
+  "startGameButton": "Start z spüu",
+  "pleaseAddMemberError": "Tu mau mindestens 1 spieler hinzuefüege.",
+  "duplicateMemberError": "Zwü pajasse mitem gliche name giht nid.",
+  "dealerMistakeTitle": "Straf",
+  "dealerMistakeQuestion": "Wöla pajass het d straf gmacht??",
+  "cancelButton": "Doch nid",
+  "confirmButton": "Jaja genau",
+  "backButton": "Zrug",
+  "continueButton": "Witer",
+  "payInTitle": "Nahzahle",
+  "payInQuestion": "Jeda muss nazahle?",
+  "addRoundButton": "Hacke",
+  "quitGameTitle": "I ma nümme",
+  "quitGameQuestion": "Büsch sicher dass du zrug wosch u z spüu isch glöscht?",
+  "gameTableTitle": "Spüublatt",
+  "headerPot": "Pot",
+  "whoHackedQuestion": "Wär hackt?",
+  "whoJoinedQuestion": "Wär chunt mid?",
+  "whoFellQuestion": "Wär isch kiht?",
+  "summaryTitle": "Zämefassig",
+  "somethingIsWrong": "Epis giht nid uf",
+  "hackedLabel": "Ghackt: {name}",
+  "@hackedLabel": {
+    "description": "Label for showing who hacked",
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "joinedLabel": "Mitcho: {names}",
+  "@joinedLabel": {
+    "description": "Label showing the list of players who joined",
+    "placeholders": {
+      "names": {}
+    }
+  },
+  "fellLabel": "Kiht: {names}",
+  "@fellLabel": {
+    "description": "Label showing the list of players who fell",
+    "placeholders": {
+      "names": {}
+    }
+  }
+}

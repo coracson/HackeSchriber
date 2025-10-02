@@ -1,12 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'l10n/app_localizations.dart'; // <- generated
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Locale _locale = const Locale('gsw'); // default locale
+
+  void _changeLocale(Locale newLocale) {
+    setState(() {
+      _locale = newLocale;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -14,13 +28,36 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
       ),
-      home: const AddMemberPage(),
+      locale: _locale, // use the current locale
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en'), // English
+        Locale('de'), // German
+        Locale('gsw'), // Swiss German
+
+      ],
+      home: AddMemberPage(
+        currentLocale: _locale,
+        onLocaleChange: _changeLocale,
+      ),
     );
   }
 }
 
 class AddMemberPage extends StatefulWidget {
-  const AddMemberPage({super.key});
+  final void Function(Locale) onLocaleChange;
+  final Locale currentLocale;
+  
+  const AddMemberPage({
+    super.key,
+    required this.onLocaleChange,
+    required this.currentLocale,
+  });
 
   @override
   State<AddMemberPage> createState() => _AddMemberPageState();
@@ -53,14 +90,14 @@ class _AddMemberPageState extends State<AddMemberPage> {
 
     if (memberNames.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please add at least one member.")),
+        SnackBar(content: Text(AppLocalizations.of(context)!.pleaseAddMemberError)),
       );
       return;
     }
     if (duplicates) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Duplicate member names are not allowed."),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.duplicateMemberError),
         ),
       );
       return;
@@ -78,9 +115,38 @@ class _AddMemberPageState extends State<AddMemberPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Member'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      ),
+      title: Text(AppLocalizations.of(context)!.addMemberPageTitle),
+      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      actions: [
+        // Language dropdown
+        DropdownButtonHideUnderline(
+          child: DropdownButton<Locale>(
+            value: widget.currentLocale,
+            icon: const Icon(Icons.language, color: Colors.white),
+            items: const [
+              DropdownMenuItem(
+                value: Locale('gsw'),
+                child: Text('CH'),
+              ),  
+              DropdownMenuItem(
+                value: Locale('en'),
+                child: Text('EN'),
+              ),
+              DropdownMenuItem(
+                value: Locale('de'),
+                child: Text('DE'),
+              ), 
+            ],
+            onChanged: (locale) {
+              if (locale != null) {
+                widget.onLocaleChange(locale); // notify parent to update locale
+              }
+            },
+          ),
+        ),
+        const SizedBox(width: 12), // spacing from edge
+      ],
+    ),
       body: SingleChildScrollView(
         padding: EdgeInsets.only(
           left: 16,
@@ -100,8 +166,8 @@ class _AddMemberPageState extends State<AddMemberPage> {
                     Expanded(
                       child: TextField(
                         controller: entry.value,
-                        decoration: const InputDecoration(
-                          labelText: 'Member name',
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.memberNameLabel,
                           border: OutlineInputBorder(),
                         ),
                       ),
@@ -130,7 +196,7 @@ class _AddMemberPageState extends State<AddMemberPage> {
                   child: ElevatedButton.icon(
                     onPressed: _addMemberField,
                     icon: const Icon(Icons.add),
-                    label: const Text('Add another member'),
+                    label: Text(AppLocalizations.of(context)!.addAnotherMemberButton),
                   ),
                 ),
               ],
@@ -138,7 +204,7 @@ class _AddMemberPageState extends State<AddMemberPage> {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _startGame,
-              child: const Text('Start game'),
+              child: Text(AppLocalizations.of(context)!.startGameButton),
             ),
           ],
         ),
@@ -259,11 +325,11 @@ class _GamePageState extends State<GamePage> {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: const Text('Dealer mistake'),
+              title: Text(AppLocalizations.of(context)!.dealerMistakeTitle),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text('Who made the mistake?'),
+                  Text(AppLocalizations.of(context)!.dealerMistakeQuestion),
                   const SizedBox(height: 12),
                   Wrap(
                     spacing: 8,
@@ -305,7 +371,7 @@ class _GamePageState extends State<GamePage> {
                           });
                           Navigator.of(context).pop();
                         },
-                  child: const Text('Confirm'),
+                  child: Text(AppLocalizations.of(context)!.confirmButton),
                 ),
               ],
             );
@@ -321,12 +387,12 @@ class _GamePageState extends State<GamePage> {
       barrierDismissible: false,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Pay in'),
-          content: const Text('Everyone has to pay in?'),
+          title: Text(AppLocalizations.of(context)!.payInTitle),
+          content: Text(AppLocalizations.of(context)!.payInQuestion),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
+              child: Text(AppLocalizations.of(context)!.cancelButton),
             ),
             TextButton(
               onPressed: () {
@@ -338,7 +404,7 @@ class _GamePageState extends State<GamePage> {
                 });
                 Navigator.of(context).pop();
               },
-              child: const Text('Confirm'),
+              child: Text(AppLocalizations.of(context)!.confirmButton),
             ),
           ],
         );
@@ -375,18 +441,16 @@ class _GamePageState extends State<GamePage> {
             context: context,
             barrierDismissible: false,
             builder: (context) => AlertDialog(
-              title: const Text('Quit Game'),
-              content: const Text(
-                'Are you sure you want to quit and delete the game?',
-              ),
+              title: Text(AppLocalizations.of(context)!.quitGameTitle),
+              content: Text(AppLocalizations.of(context)!.quitGameQuestion),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(false),
-                  child: const Text('Back'),
+                  child: Text(AppLocalizations.of(context)!.cancelButton),
                 ),
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(true),
-                  child: const Text('Confirm'),
+                  child: Text(AppLocalizations.of(context)!.confirmButton),
                 ),
               ],
             ),
@@ -401,7 +465,7 @@ class _GamePageState extends State<GamePage> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          title: const Text('Game Table'),
+          title: Text(AppLocalizations.of(context)!.gameTableTitle),
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         ),
         body: Padding(
@@ -467,7 +531,7 @@ class _GamePageState extends State<GamePage> {
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: _showAddRoundDialog,
-                child: const Text('Add round'),
+                child: Text(AppLocalizations.of(context)!.addRoundButton),
               ),
               const SizedBox(height: 8),
               Row(
@@ -475,14 +539,14 @@ class _GamePageState extends State<GamePage> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: _showDealerMistakeDialog,
-                      child: const Text('Dealer mistake'),
+                      child: Text(AppLocalizations.of(context)!.dealerMistakeTitle),
                     ),
                   ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: ElevatedButton(
                       onPressed: _showPayInDialog,
-                      child: const Text('Pay in'),
+                      child: Text(AppLocalizations.of(context)!.payInTitle),
                     ),
                   ),
                 ],
@@ -520,9 +584,8 @@ class _AddRoundDialogState extends State<AddRoundDialog> {
       content = Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text(
-            'Who hacked?',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          Text(AppLocalizations.of(context)!.whoHackedQuestion, 
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
           Wrap(
@@ -543,13 +606,13 @@ class _AddRoundDialogState extends State<AddRoundDialog> {
             children: [
               ElevatedButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Cancel'),
+                child: Text(AppLocalizations.of(context)!.cancelButton),
               ),
               ElevatedButton(
                 onPressed: hacker == null
                     ? null
                     : () => setState(() => step = 1),
-                child: const Text('Confirm'),
+                child: Text(AppLocalizations.of(context)!.continueButton),
               ),
             ],
           ),
@@ -561,9 +624,8 @@ class _AddRoundDialogState extends State<AddRoundDialog> {
       content = Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text(
-            'Who joined?',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          Text(AppLocalizations.of(context)!.whoJoinedQuestion, 
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
           Wrap(
@@ -592,11 +654,11 @@ class _AddRoundDialogState extends State<AddRoundDialog> {
             children: [
               ElevatedButton(
                 onPressed: () => setState(() => step = 0),
-                child: const Text('Back'),
+                child: Text(AppLocalizations.of(context)!.backButton),
               ),
               ElevatedButton(
                 onPressed: () => setState(() => step = 2),
-                child: const Text('Confirm'),
+                child: Text(AppLocalizations.of(context)!.continueButton),
               ),
             ],
           ),
@@ -608,10 +670,8 @@ class _AddRoundDialogState extends State<AddRoundDialog> {
       content = Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text(
-            'Who fell?',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
+          Text(AppLocalizations.of(context)!.whoFellQuestion, 
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           const SizedBox(height: 12),
           Wrap(
             spacing: 8,
@@ -639,11 +699,11 @@ class _AddRoundDialogState extends State<AddRoundDialog> {
             children: [
               ElevatedButton(
                 onPressed: () => setState(() => step = 1),
-                child: const Text('Back'),
+                child: Text(AppLocalizations.of(context)!.backButton),
               ),
               ElevatedButton(
                 onPressed: () => setState(() => step = 3),
-                child: const Text('Confirm'),
+                child: Text(AppLocalizations.of(context)!.continueButton),
               ),
             ],
           ),
@@ -662,27 +722,24 @@ class _AddRoundDialogState extends State<AddRoundDialog> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Summary',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
+          Text(AppLocalizations.of(context)!.summaryTitle, 
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           const SizedBox(height: 12),
-          Text('Hacked: ${hacker ?? ""}'),
-          Text('Joined: ${joiners.join(", ")}'),
-          Text('Fell: ${fell.join(", ")}'),
+          Text(AppLocalizations.of(context)!.hackedLabel(hacker ?? "")),
+          Text(AppLocalizations.of(context)!.joinedLabel(joiners.join(", "))),
+          Text(AppLocalizations.of(context)!.fellLabel(fell.join(", "))),
+
           const SizedBox(height: 12),
           if (!isValid)
-            const Text(
-              'Something is wrong',
-              style: TextStyle(color: Colors.red, fontSize: 14),
-            ),
+          Text(AppLocalizations.of(context)!.somethingIsWrong,
+          style: TextStyle(color: Colors.red, fontSize: 14)),
           const SizedBox(height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ElevatedButton(
                 onPressed: () => setState(() => step = 2),
-                child: const Text('Back'),
+                child: Text(AppLocalizations.of(context)!.backButton),
               ),
               ElevatedButton(
                 onPressed: isValid
@@ -693,7 +750,7 @@ class _AddRoundDialogState extends State<AddRoundDialog> {
                         Navigator.of(context).pop();
                       }
                     : null, // disable confirm if invalid
-                child: const Text('Confirm'),
+                child: Text(AppLocalizations.of(context)!.confirmButton),
               ),
             ],
           ),
